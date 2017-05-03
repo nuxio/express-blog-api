@@ -6,10 +6,16 @@
     </head>
     <body>
         <a id="register" href="javascript:;">注册</a>
-
+        <a id="login" href="javascript:;">登录</a>
         <script>
             $('body').delegate('#register', 'click', function() {
                 $.post('/register', {username: 'abc', password: 'bbb', password_confirm: 'bbb'}, function(res) {
+                    console.log(res);
+                });
+            });
+
+            $('body').delegate('#login', 'click', function() {
+                $.post('/login', {username: 'abc', password: 'bbb', remember: 1}, function(res) {
                     console.log(res);
                 });
             });

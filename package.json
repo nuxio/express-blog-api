@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "server": "node ./server/index.js"
+    "dev": "supervisor ./server/index.js",
+    "start": "node ./server/index.js"
   },
   "author": "nuxio",
   "license": "MIT",
@@ -13,6 +14,7 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.15.2",
     "express-session": "^1.15.2",
-    "mongoose": "^4.9.7"
+    "mongoose": "^4.9.7",
+    "supervisor": "^0.12.0"
   }
 }

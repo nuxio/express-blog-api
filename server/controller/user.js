@@ -50,7 +50,11 @@ exports.register = function (req, res) {
     });
 }
 
+// 登录
 exports.login = function (req, res) {
+    if(req.session.user) {
+        return res.json({msg: '已登录'});
+    }
     let { username, password, remember } = req.body;
     let error_msg = '';
 
@@ -74,10 +78,21 @@ exports.login = function (req, res) {
         if(user.password !== password) {
             return res.json({msg: '用户名或密码错误'});
         }
-        if(remember === 1) {
-            
+        
+        // 记住登录，将_id存在cookie中
+        if(remember === '1') {
+            let opts = {
+                path: '/',
+                maxAge: 1000 * 3600 * 24 * 7,
+                signed: true,
+                httpOnly: true
+            };
+            res.cookie('user_id', user._id, opts);
         }
+
+        delete user.password;
         req.session.user = user;
+        
         res.json({msg: 'ok', username: user.username});
     })
     .catch(error => {

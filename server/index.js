@@ -11,15 +11,15 @@ let app = express();
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-// cookie
-app.use(cookieParser());
+// cookie signedCookie 需要传递secret字段，要与session参数中的一致
+app.use(cookieParser('blog'));
 // session
 app.use(session({
   secret: 'blog',
   resave: false,
   saveUninitialized: false,
   cookie: { secure: false } // secure: true 的话cookie只通过https传递
-}))
+}));
 
 // 设置路由
 route(app);
