@@ -5,6 +5,7 @@ let Schema = connect.Schema;
 let UserSchema = new Schema({
     username: { type: String },
     password: { type: String },
+    avatar_url: { type: String },
     gender: { type: String },
     email: { type: String },
     mobile: { type: String },
@@ -27,4 +28,9 @@ exports.register = function (username, password) {
 // 根据用户名查找用户
 exports.findByUsername = function (username) {
     return User.findOne({username: username}).exec();
+}
+
+// 根据用户名更新用户信息
+exports.updateByUsername = function(username, update) {
+    return User.findOneAndUpdate({username: username}, update).exec();
 }

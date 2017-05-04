@@ -1,10 +1,14 @@
 let User = require('../model/User');
 let crypto = require('crypto');
+let UploadUtil = require('../util/upload');
 
 const password_suffix = '_blog';
 
 // 注册
 exports.register = function (req, res) {
+    if(req.session.user) {
+        return res.json({msg: '您已登录，不能重复注册'});
+    }
     let { username, password, password_confirm } = req.body;
     let error_msg = '';
     if(!username.trim()) {
@@ -53,7 +57,7 @@ exports.register = function (req, res) {
 // 登录
 exports.login = function (req, res) {
     if(req.session.user) {
-        return res.json({msg: '已登录'});
+        return res.json({msg: '您已登录，不能重复登录'});
     }
     let { username, password, remember } = req.body;
     let error_msg = '';
@@ -96,6 +100,70 @@ exports.login = function (req, res) {
         res.json({msg: 'ok', username: user.username});
     })
     .catch(error => {
-        res.json({msg: '用户名或密码错误'});
+        res.json({msg: error.message || '用户名或密码错误'});
     });
-}
+};
+
+exports.logout = function (req, res) {
+};
+
+// 根据用户名获取用户详细信息
+exports.getUserInfoByUsername = function (req, res) {
+    let { username } = req.params;
+
+    if(!username.trim()) {
+        return res.json({msg: '用户名不能为空'});
+    }
+
+    User.findByUsername(username)
+    .then(user => {
+        user.password = '';
+        res.json({msg: 'ok', user: user});
+    })
+    .catch(error => {
+        res.json({msg: '用户不存在'});
+    });
+};
+
+// 更新用户信息
+exports.updateUserInfo = function (req, res) {
+    let { username } = req.params; 
+    if(!req.session.user) {
+        return res.json({msg: '您还未登录，请登录'});
+    }
+    if(req.session.user.username !== username) {
+        return res.json({msg: '不能修改他人信息'});
+    }
+    let update = {};
+
+    const can_update_props = ['email', 'gender', 'mobile', 'introduce', 'avatar_url'];
+
+    Object.keys(req.body).forEach(k => {
+        if(!update[k] && can_update_props.indexOf(k) > -1) {
+            update[k] = req.body[k];
+        }
+    });
+
+    User.updateByUsername(username, update)
+    .then(user => {
+        res.json({msg: 'ok', user: user});
+    })
+    .catch(error => {
+        res.json({msg: '更新失败', error: error});
+    });
+};
+
+// 上传用户头像
+exports.uploadAvatar = function (req, res) {
+    UploadUtil.upload(req, res, function (error) {
+        if(error) {
+            res.json({msg: error.code ? '图片大小超过限制' : error});
+        } else {
+            let { username } = req.params;
+            let originalname = req.file.originalname.split(".");
+            // todo: 此处路径以后改为nginx代理的静态目录路径
+            let file_path = '/public/upload/avatars/' + username + '.' + originalname[originalname.length - 1];
+            res.json({msg: 'ok', avatar_url: file_path});
+        }
+    });
+};

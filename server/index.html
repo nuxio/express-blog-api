@@ -7,15 +7,63 @@
     <body>
         <a id="register" href="javascript:;">注册</a>
         <a id="login" href="javascript:;">登录</a>
+        <a id="get_user" href="javascript:;">获取用户信息</a>
+        <a id="update_user" href="javascript:;">更新用户信息</a>
+        <a id="create" href="javascript:;">发布博客</a>
+        <a id="get_blog" href="javascript:;">获取博客详情</a>
+        <a id="modify_blog" href="javascript:;">更改博客详情</a>
+        <a id="get_blogs" href="javascript:;">获取博客列表</a>
+
+        <form action="/upload/avatar/aaa" enctype="multipart/form-data" method="post">
+            <input type="file" name="avatar" />
+            <input type="submit" value="提交" />
+        </form>
+
         <script>
             $('body').delegate('#register', 'click', function() {
-                $.post('/register', {username: 'abc', password: 'bbb', password_confirm: 'bbb'}, function(res) {
+                $.post('/register', {username: 'bbc', password: 'bbb', password_confirm: 'bbb'}, function(res) {
                     console.log(res);
                 });
             });
 
             $('body').delegate('#login', 'click', function() {
-                $.post('/login', {username: 'abc', password: 'bbb', remember: 1}, function(res) {
+                $.post('/login', {username: 'bbc', password: 'bbb', remember: 1}, function(res) {
+                    console.log(res);
+                });
+            });
+
+             $('body').delegate('#get_user', 'click', function() {
+                $.get('/user/aaa', function(res) {
+                    console.log(res);
+                });
+            });
+
+            $('body').delegate('#update_user', 'click', function() {
+                $.post('/user/aaa', {username: 'aaa', password: 'bbb', email: '123@qq.com', mobile: '13666666666', gender: '男', introduce: '123123'}, function(res) {
+                    console.log(res);
+                });
+            });
+
+            $('body').delegate('#create', 'click', function() {
+                $.post('/create', {title: 'biaotik', content: 'content123123123', tags: '123'}, function(res) {
+                    console.log(res);
+                });
+            });
+
+            $('body').delegate('#get_blog', 'click', function() {
+                $.get('/blog/590af9423b97512474b44baf', function(res) {
+                    console.log(res);
+                });
+            });
+
+            $('body').delegate('#modify_blog', 'click', function() {
+                $.post('/blog/590af9423b97512474b44baf', {title: 'biaotik2', content: 'contentxxxxxx', tags: ['233', '123']}, function(res) {
+                    console.log(res);
+                });
+            });
+
+            $('body').delegate('#get_blogs', 'click', function() {
+                $.get('/blogs/aaa', function(res) {
                     console.log(res);
                 });
             });
