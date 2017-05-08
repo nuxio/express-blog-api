@@ -1,6 +1,7 @@
 let path = require('path');
 let user = require('../controller/user');
 let blog = require('../controller/blog');
+let comment = require('../controller/comment');
 
 module.exports = function (app) {
     app.get('/', function(req, res) {
@@ -20,4 +21,9 @@ module.exports = function (app) {
     app.post('/blog/:blog_id', blog.updateBlogById);
     app.get('/blogs/:author', blog.queryBlogsByPage);
     app.post('/blog/delete/:blog_id', blog.deleteBlogById);
+
+    // comment
+    app.post('/:blog_id/comment', comment.comment);
+    app.get('/:blog_id/comments', comment.findByBlogId);
+    app.post('/comment/delete', comment.deleteById);
 };

@@ -8,8 +8,8 @@ let BlogSchema = new Schema({
     author: { type: String },
     author_avatar_url: { type: String },
     create_at: { type: String },
-    last_modify_at: { type: String },
-    removed: { type: Number }
+    last_modify_at: { type: String, default: '' },
+    deleted: { type: Boolean, default: false }
 });
 
 let Blog = connect.model('Blog', BlogSchema);
@@ -20,14 +20,12 @@ exports.create = function (initials) {
     blog = Object.assign(blog, initials);
     
     blog.create_at = new Date().getTime();
-    blog.last_modify_at = '';
-    blog.removed = 0;
     return blog.save();
 };
 
 // 根据_id查找博客
 exports.findById = function(id) {
-    return Blog.find({_id: id, removed: 0}).exec();
+    return Blog.find({_id: id, deleted: false}).exec();
 };
 
 // 根据_id更新博客
@@ -41,11 +39,11 @@ exports.updateById = function(id, update) {
  * @params {Object} filters 其他查询参数，如 { author: 'xxx' }
  */
 exports.findByPage = function (offset, limit, filters = {}) {
-    filters.removed = 0;
+    filters.deleted = false;
     return Blog.find(filters).skip(offset).limit(limit).exec();
 };
 
 // 删除博客，标记
 exports.deleteById = function (id) {
-    return Blog.findByIdAndUpdate(id, {removed: 1}).exec();
+    return Blog.findByIdAndUpdate(id, {deleted: true}).exec();
 }
