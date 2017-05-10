@@ -19,8 +19,9 @@ module.exports = function (app) {
     app.post('/create', blog.createBlog);
     app.get('/blog/:blog_id', blog.findBlogById);
     app.post('/blog/:blog_id', blog.updateBlogById);
-    app.get('/blogs/:author', blog.queryBlogsByPage);
+    app.get('/blogs', blog.queryBlogsByPage);
     app.post('/blog/delete/:blog_id', blog.deleteBlogById);
+    app.post('/blog/:blog_id/up', blog.up);
 
     // comment
     app.post('/:blog_id/comment', comment.comment);

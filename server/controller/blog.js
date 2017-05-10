@@ -78,7 +78,7 @@ exports.updateBlogById = function (req, res) {
         tags
     };
 
-    Blog.findById(blog_id)
+    Blog.findByIdWithoutVisitInc(blog_id)
     .then(blog => {
         return new Promise(function (resolve, reject) {
             if(blog.author !== user.username) {
@@ -97,7 +97,8 @@ exports.updateBlogById = function (req, res) {
 
 // 分页查找博客
 exports.queryBlogsByPage = function (req, res) {
-    let { page = 1, limit = 10, author } = req.params;
+    let { page = 1, limit = 10 } = req.params;
+    let query = req.query || {};
     let error_msg = '';
     page = parseInt(page, 10);
     limit = parseInt(limit, 10);
@@ -114,7 +115,7 @@ exports.queryBlogsByPage = function (req, res) {
 
     let offset = (page - 1) * limit;
 
-    Blog.findByPage(page, offset, author ? {author} : '')
+    Blog.findByPage(page, offset, query)
     .then(blogs => res.json({msg: 'ok', blogs}))
     .catch(error => res.json({msg: '查询失败，请稍后再试', error}));
 };
@@ -129,4 +130,46 @@ exports.deleteBlogById = function (req, res) {
     Blog.deleteById(id)
     .then(blog => res.json({msg: 'ok', blog_id: blog._id}))
     .catch(error => res.json({msg: '删除失败', error}));
+}
+
+exports.up = function (req, res) {
+    let { blog_id } = req.params;
+    let action = 'up';
+    let user = req.session.user;
+    let error_msg = '';
+    if(!user) {
+        error_msg = '您还未登录，请登录';
+    }
+    if(!blog_id) {
+        error_msg = '博客ID不能为空';
+    }
+    if(error_msg) {
+        return res.json({msg: error_msg});
+    }
+
+    Blog.findByIdWithoutVisitInc(blog_id)
+    .then(blog => {
+        return new Promise(function (resolve, reject) {
+            if(!blog) {
+                reject({msg: '不存在的博客'});
+            }
+            if(blog.author === user.username) {
+                reject({msg: '不能为自己的博客点赞'});
+            } else {
+                if(blog.ups.filter(u => u.username === user.username).length) {
+                    action = 'down';
+                }
+                resolve(action);
+            }
+        })
+    })
+    .then((action) => {
+        if(action === 'up') {
+            return Blog.up(blog_id, user.username, user.avatar_url);
+        } else if(action === 'down') {
+            return Blog.down(blog_id, user.username);
+        }
+    })
+    .then(blog => res.json({msg: 'ok', action}))
+    .catch(error => res.json({msg: error.msg || '点赞失败，请稍后再试', error}));
 }

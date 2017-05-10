@@ -2,14 +2,17 @@ let connect = require('../mongodb/connect');
 let Schema = connect.Schema;
 
 let BlogSchema = new Schema({
-    title: { type: String },
-    content: { type: String },
-    tags: { type: Array },
-    author: { type: String },
-    author_avatar_url: { type: String },
-    create_at: { type: String },
-    last_modify_at: { type: String, default: '' },
-    deleted: { type: Boolean, default: false }
+    title             : { type: String },
+    content           : { type: String },
+    tags              : { type: Array  },
+    author            : { type: String },
+    author_avatar_url : { type: String },
+    create_at         : { type: String },
+    last_modify_at    : { type: String,  default: '' },
+    visit             : { type: Number,  default: 0 },
+    up                : { type: Number,  default: 0 },
+    ups               : { type: Array,   default: [] },
+    deleted           : { type: Boolean, default: false }
 });
 
 let Blog = connect.model('Blog', BlogSchema);
@@ -23,9 +26,14 @@ exports.create = function (initials) {
     return blog.save();
 };
 
-// 根据_id查找博客
+// 根据_id查找博客（有增加浏览量）
 exports.findById = function(id) {
-    return Blog.find({_id: id, deleted: false}).exec();
+    return Blog.findOneAndUpdate({_id: id, deleted: false}, {$inc: {visit: 1}}).exec();
+};
+
+// 根据_id查找博客
+exports.findByIdWithoutVisitInc = function(id) {
+    return Blog.findOne({_id: id, deleted: false}).exec();
 };
 
 // 根据_id更新博客
@@ -46,4 +54,27 @@ exports.findByPage = function (offset, limit, filters = {}) {
 // 删除博客，标记
 exports.deleteById = function (id) {
     return Blog.findByIdAndUpdate(id, {deleted: true}).exec();
-}
+};
+
+// 点赞
+exports.up = function (id, username, avatar_url) {
+    let update = {
+        $inc: { up: 1 },
+        $push: {
+            ups: { username, avatar_url }
+        }
+    };
+    return Blog.findOneAndUpdate({_id: id, deleted: false}, update).exec();
+};
+
+// 取消点赞
+exports.down = function (id, username) {
+    let update = {
+        $inc: {up: -1},
+        $pull: {
+            ups: { username }
+        }
+    };
+
+    return Blog.findOneAndUpdate({_id: id, deleted: false}, update).exec();
+};

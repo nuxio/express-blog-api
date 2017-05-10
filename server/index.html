@@ -11,6 +11,7 @@
         <a id="update_user" href="javascript:;">更新用户信息</a>
         <a id="create" href="javascript:;">发布博客</a>
         <a id="get_blog" href="javascript:;">获取博客详情</a>
+        <a id="action_up" href="javascript:;">博客点赞</a>
         <a id="modify_blog" href="javascript:;">更改博客详情</a>
         <a id="get_blogs" href="javascript:;">获取博客列表</a>
         <a id="add_comment" href="javascript:;">添加评论</a>
@@ -54,31 +55,37 @@
             });
 
             $('body').delegate('#get_blog', 'click', function() {
-                $.get('/blog/590af9423b97512474b44baf', function(res) {
+                $.get('/blog/59129b3d23aa4038409f1a44', function(res) {
+                    console.log(res);
+                });
+            });
+            
+            $('body').delegate('#action_up', 'click', function() {
+                $.post('/blog/59129b3d23aa4038409f1a44/up', function(res) {
                     console.log(res);
                 });
             });
 
             $('body').delegate('#modify_blog', 'click', function() {
-                $.post('/blog/590af9423b97512474b44baf', {title: 'biaotik2', content: 'contentxxxxxx', tags: ['233', '123']}, function(res) {
+                $.post('/blog/59129b3d23aa4038409f1a44', {title: 'biaotik2', content: 'contentxxxxxx', tags: ['233', '123']}, function(res) {
                     console.log(res);
                 });
             });
 
             $('body').delegate('#get_blogs', 'click', function() {
-                $.get('/blogs/aaa', function(res) {
+                $.get('/blogs', function(res) {
                     console.log(res);
                 });
             });
 
             $('body').delegate('#add_comment', 'click', function() {
-                $.post('/590af9423b97512474b44baf/comment', { content: '写的太好了！膜拜！' }, function(res) {
+                $.post('/59129b3d23aa4038409f1a44/comment', { content: '写的太好了！膜拜！' }, function(res) {
                     console.log(res);
                 });
             });
 
             $('body').delegate('#get_comments', 'click', function() {
-                $.get('/590af9423b97512474b44baf/comments', function(res) {
+                $.get('/59129b3d23aa4038409f1a44/comments', function(res) {
                     console.log(res);
                 });
             });
