@@ -17,6 +17,8 @@
         <a id="add_comment" href="javascript:;">添加评论</a>
         <a id="get_comments" href="javascript:;">查找评论列表</a>
         <a id="delete_comment" href="javascript:;">删除评论</a>
+        <a id="comment_action_up" href="javascript:;">评论点赞</a>
+        <a id="logout" href="javascript:;">退出登录</a>
 
         <form action="/upload/avatar/aaa" enctype="multipart/form-data" method="post">
             <input type="file" name="avatar" />
@@ -43,7 +45,7 @@
             });
 
             $('body').delegate('#update_user', 'click', function() {
-                $.post('/user/aaa', {username: 'aaa', password: 'bbb', email: '123@qq.com', mobile: '13666666666', gender: '男', introduce: '123123'}, function(res) {
+                $.post('/user/bbc', {username: 'bbc', password: 'bbb', email: '123@qq.com', mobile: '13666666666', gender: '男', introduce: '123123'}, function(res) {
                     console.log(res);
                 });
             });
@@ -92,6 +94,18 @@
 
             $('body').delegate('#delete_comment', 'click', function() {
                 $.post('/comment/delete', { comment_id: "590e8f35c635172f448d8e6a" }, function(res) {
+                    console.log(res);
+                });
+            });
+
+            $('body').delegate('#comment_action_up', 'click', function() {
+                $.post('/comment/5912cec0e819722be44f30e4/up', function(res) {
+                    console.log(res);
+                });
+            });
+
+            $('body').delegate('#logout', 'click', function() {
+                $.post('/logout', function(res) {
                     console.log(res);
                 });
             });

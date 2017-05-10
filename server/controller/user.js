@@ -11,13 +11,13 @@ exports.register = function (req, res) {
     }
     let { username, password, password_confirm } = req.body;
     let error_msg = '';
-    if(!username.trim()) {
+    if(!username) {
         error_msg = '用户名不能为空';
     }
-    if(!password.trim()) {
+    if(!password) {
         error_msg = '密码不能为空';
     }
-    if(!password_confirm.trim()) {
+    if(!password_confirm) {
         error_msg = '密码确认不能为空';
     }
     if(password !== password_confirm) {
@@ -28,7 +28,7 @@ exports.register = function (req, res) {
     }
     
     let sha256 = crypto.createHash('sha256');
-    sha256.update(password.trim() + password_suffix);
+    sha256.update(password + password_suffix);
     password = sha256.digest('hex');
 
     // 先执行查找
@@ -62,10 +62,10 @@ exports.login = function (req, res) {
     let { username, password, remember } = req.body;
     let error_msg = '';
 
-    if(!username.trim()) {
+    if(!username) {
         error_msg = '用户名不能为空';
     }
-    if(!password.trim()) {
+    if(!password) {
         error_msg = '密码不能为空';
     }
     if(error_msg) {
@@ -73,13 +73,13 @@ exports.login = function (req, res) {
     }
 
     let sha256 = crypto.createHash('sha256');
-    sha256.update(password.trim() + password_suffix);
+    sha256.update(password + password_suffix);
     password = sha256.digest('hex');
 
     // 先执行查找
     User.findByUsername(username)
     .then(user => {
-        if(user.password !== password) {
+        if(!user || user.password !== password) {
             return res.json({msg: '用户名或密码错误'});
         }
         
@@ -91,33 +91,37 @@ exports.login = function (req, res) {
                 signed: true,
                 httpOnly: true
             };
-            res.cookie('user_id', user._id, opts);
+            res.cookie('username', user.username, opts);
         }
 
         delete user.password;
         req.session.user = user;
         
-        res.json({msg: 'ok', username: user.username});
+        res.json({msg: 'ok', user: user});
     })
     .catch(error => {
         res.json({msg: error.message || '用户名或密码错误'});
     });
 };
 
+// 退出登录
 exports.logout = function (req, res) {
+    delete req.session.user;
+    res.clearCookie('username');
+    res.json({msg: 'ok'});
 };
 
 // 根据用户名获取用户详细信息
 exports.getUserInfoByUsername = function (req, res) {
     let { username } = req.params;
 
-    if(!username.trim()) {
+    if(!username) {
         return res.json({msg: '用户名不能为空'});
     }
 
     User.findByUsername(username)
     .then(user => {
-        user.password = '';
+        delete user.password;
         res.json({msg: 'ok', user: user});
     })
     .catch(error => {
@@ -127,10 +131,8 @@ exports.getUserInfoByUsername = function (req, res) {
 
 // 更新用户信息
 exports.updateUserInfo = function (req, res) {
-    let { username } = req.params; 
-    if(!req.session.user) {
-        return res.json({msg: '您还未登录，请登录'});
-    }
+    let { username } = req.params;
+
     if(req.session.user.username !== username) {
         return res.json({msg: '不能修改他人信息'});
     }
@@ -146,6 +148,7 @@ exports.updateUserInfo = function (req, res) {
 
     User.updateByUsername(username, update)
     .then(user => {
+        delete user.password;
         res.json({msg: 'ok', user: user});
     })
     .catch(error => {

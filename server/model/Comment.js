@@ -3,13 +3,15 @@ let Schema = connect.Schema;
 let ObjectId = Schema.Types.ObjectId;
 
 let CommentSchema = new Schema({
-    content: { type: String, required: true },
-    create_at: { type: String, required: true },
-    author: { type: String, required: true },
+    content          : { type: String, required: true },
+    create_at        : { type: String, required: true },
+    author           : { type: String, required: true },
     author_avatar_url: { type: String },
-    reply_to: { type: String }, // 是否是回复某一条评论的
-    blog_id: { type: ObjectId, required: true },
-    deleted: { type: Boolean, default: false }
+    reply_to         : { type: String }, // 是否是回复某一条评论的
+    blog_id          : { type: ObjectId, required: true },
+    up               : { type: Number,   default: 0 },
+    ups              : { type: Array,    default: [] },
+    deleted          : { type: Boolean,  default: false }
 });
 
 let Comment = connect.model('Comment', CommentSchema);
@@ -36,4 +38,27 @@ exports.delete = function (id) {
 // 按评论ID查找
 exports.findById = function(id) {
     return Comment.findOne({_id: id, deleted: false }).exec();
+};
+
+// 点赞
+exports.up = function (id, username, avatar_url) {
+    let update = {
+        $inc: { up: 1 },
+        $push: {
+            ups: { username, avatar_url }
+        }
+    };
+    return Comment.findOneAndUpdate({_id: id, deleted: false}, update).exec();
+};
+
+// 取消点赞
+exports.down = function (id, username) {
+    let update = {
+        $inc: {up: -1},
+        $pull: {
+            ups: { username }
+        }
+    };
+
+    return Comment.findOneAndUpdate({_id: id, deleted: false}, update).exec();
 };
