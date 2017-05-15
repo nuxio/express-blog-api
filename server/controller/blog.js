@@ -96,8 +96,11 @@ exports.updateBlogById = function (req, res) {
 
 // 分页查找博客
 exports.queryBlogsByPage = function (req, res) {
-    let { page = 1, limit = 10 } = req.params;
+    let { page = 1, limit = 10 } = req.query;
     let query = req.query || {};
+    query.page && (delete query.page);
+    query.limit && (delete query.limit);
+    
     let error_msg = '';
     page = parseInt(page, 10);
     limit = parseInt(limit, 10);
@@ -113,9 +116,17 @@ exports.queryBlogsByPage = function (req, res) {
     }
 
     let offset = (page - 1) * limit;
-
-    Blog.findByPage(page, offset, query)
-    .then(blogs => res.json({msg: 'ok', blogs}))
+    let total_num = 0;
+    
+    Blog.count()
+    .then(count => {
+        return new Promise(function (resolve, reject) {
+            total_num = count;
+            resolve();
+        });
+    })
+    .then(() => Blog.findByPage(offset, limit, query))
+    .then(blogs => res.json({msg: 'ok', blogs, total_num, page}))
     .catch(error => res.json({msg: '查询失败，请稍后再试', error}));
 };
 
