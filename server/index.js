@@ -24,8 +24,11 @@ app.use(session({
     } // secure: true 的话cookie只通过https传递
 }));
 
-// 设置允许跨域请求
-app.use(cors());
+// 设置允许跨域请求，携带cookie
+app.use(cors({
+    origin: 'http://localhost:8080',
+    credentials: true
+}));
 
 // 设置路由
 route(app);
