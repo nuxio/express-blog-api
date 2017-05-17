@@ -137,7 +137,22 @@ exports.deleteBlogById = function (req, res) {
         return res.json({msg: '博客ID不能为空'});
     }
 
-    Blog.deleteById(id)
+    Blog.findByIdWithoutVisitInc(blog_id)
+    .then(blog => {
+        return new Promise(function (resolve, reject) {
+            if(!blog) {
+                reject({msg: '不存在的博客'});
+            }
+            if(blog.author !== user.username) {
+                reject({msg: '不能删除他人的博客'});
+            } else {
+                resolve();
+            }
+        })
+    })
+    .then((action) => {
+        return Blog.deleteById(id);
+    })
     .then(blog => res.json({msg: 'ok', blog_id: blog._id}))
     .catch(error => res.json({msg: '删除失败，请稍后再试', error}));
 };
