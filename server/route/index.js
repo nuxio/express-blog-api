@@ -19,10 +19,10 @@ module.exports = function (app) {
 
     // blog
     app.post('/create',               auth.confirmLogin, blog.createBlog);
+    app.post('/blog/delete',          auth.confirmLogin, blog.deleteBlogById);
     app.get('/blog/:blog_id',                            blog.findBlogById);
     app.post('/blog/:blog_id',        auth.confirmLogin, blog.updateBlogById);
     app.get('/blogs',                                    blog.queryBlogsByPage);
-    app.post('/blog/delete/:blog_id', auth.confirmLogin, blog.deleteBlogById);
     app.post('/blog/:blog_id/up',     auth.confirmLogin, blog.up);
 
     // comment

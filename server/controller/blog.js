@@ -133,6 +133,7 @@ exports.queryBlogsByPage = function (req, res) {
 // 删除博客
 exports.deleteBlogById = function (req, res) {
     let { blog_id } = req.body;
+    let user = req.session.user;
     if(!blog_id) {
         return res.json({msg: '博客ID不能为空'});
     }
@@ -150,8 +151,8 @@ exports.deleteBlogById = function (req, res) {
             }
         })
     })
-    .then((action) => {
-        return Blog.deleteById(id);
+    .then(() => {
+        return Blog.deleteById(blog_id);
     })
     .then(blog => res.json({msg: 'ok', blog_id: blog._id}))
     .catch(error => res.json({msg: '删除失败，请稍后再试', error}));

@@ -26,7 +26,7 @@ app.use(session({
 
 // 设置允许跨域请求，携带cookie
 app.use(cors({
-    origin: 'http://localhost:8080',
+    origin: 'http://localhost:3001',
     credentials: true
 }));
 
