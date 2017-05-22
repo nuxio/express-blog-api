@@ -1,11 +1,12 @@
 {
   "name": "express-blog-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "Express blog api",
   "main": "index.js",
   "scripts": {
     "dev": "supervisor ./server/index.js",
-    "start": "node ./server/index.js"
+    "start": "node ./server/index.js",
+    "test": "mocha ./test/index.test.js"
   },
   "author": "nuxio",
   "license": "MIT",
@@ -15,10 +16,13 @@
     "express": "^4.15.2",
     "express-session": "^1.15.2",
     "mongoose": "^4.9.7",
-    "multer": "^1.3.0",
-    "supervisor": "^0.12.0"
+    "multer": "^1.3.0"
   },
   "devDependencies": {
-    "cors": "^2.8.3"
+    "cors": "^2.8.3",
+    "mocha": "^3.4.1",
+    "should": "^11.2.1",
+    "supertest": "^3.0.0",
+    "supervisor": "^0.12.0"
   }
 }

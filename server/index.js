@@ -9,6 +9,7 @@ let route = require('./route');
 let app = express();
 
 // 解析post
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -49,6 +50,8 @@ app.use(function(req, res, next) {
     });
 });
 
-app.listen(3000, function() {
+let server = app.listen(3000, function() {
     console.log('Start listen to port: 3000');
 });
+
+module.exports = server;
