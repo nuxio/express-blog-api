@@ -78,6 +78,7 @@ describe('test/express blog api', function() {
                });
     });
 
+    // 不能传特定的id
     // it('POST /blog/delete', function (done) {
     //     request.post('/blog/delete')
     //            .send({blog_id: "5922b6f0e2b96625bc34afe5"})
@@ -89,14 +90,14 @@ describe('test/express blog api', function() {
     //            });
     // });
 
-    it('GET /blog/:blog_id', function (done) {
-        request.get('/blog/5922b6f0e2b96625bc34afe5')
-               .expect(200)
-               .end(function (err, res) {
-                    res.body.msg.should.equal('ok');
-                    res.body.should.have.property('blog');
+    // it('GET /blog/:blog_id', function (done) {
+    //     request.get('/blog/5922b6f0e2b96625bc34afe5')
+    //            .expect(200)
+    //            .end(function (err, res) {
+    //                 res.body.msg.should.equal('ok');
+    //                 res.body.should.have.property('blog');
 
-                    done(err);
-               });
-    });
+    //                 done(err);
+    //            });
+    // });
 });
