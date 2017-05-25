@@ -8,7 +8,7 @@ let request = supertest.agent(app);
 
 describe('test/express blog api', function() {
     it('POST /register', function (done) {
-        request.post('/register')
+        request.post('/api/register')
                .send({username: 'test', password: 'test', password_confirm: 'test'})
                .expect(200)
                .end(function (err, res) {
@@ -19,7 +19,7 @@ describe('test/express blog api', function() {
     });
 
     it('POST /login', function (done) {
-        request.post('/login')
+        request.post('/api/login')
                .send({username: 'test', password: 'test', remember: 1})
                .expect(200)
                // 这个好难写，实际的set-cookie头的值是username=xxxxx; 很乱的一串...，而且还有connect.sid这个cookie
@@ -33,7 +33,7 @@ describe('test/express blog api', function() {
     });
 
     it('GET /user/:username', function (done) {
-        request.get('/user/test')
+        request.get('/api/user/test')
                .expect(200)
                .end(function (err, res) {
                     res.body.msg.should.equal('ok');
@@ -44,7 +44,7 @@ describe('test/express blog api', function() {
     });
 
     it('POST /user/:username', function (done) {
-        request.post('/user/test')
+        request.post('/api/user/test')
                .send({email: 'test@xx.com'})
                .expect(200)
                .end(function (err, res) {
@@ -55,7 +55,7 @@ describe('test/express blog api', function() {
     });
 
     it('POST /upload/avatar/:username', function (done) {
-        request.post('/upload/avatar/test')
+        request.post('/api/upload/avatar/test')
                .attach('avatar', './test/files/test_avatar.jpg')
                .expect(200)
                .end(function (err, res) {
@@ -67,7 +67,7 @@ describe('test/express blog api', function() {
     });
 
     it('POST /create', function (done) {
-        request.post('/create')
+        request.post('/api/create')
                .send({title: '@Supertest', content: 'Nice Blog.', tags: ['t1', 't2']})
                .expect(200)
                .end(function (err, res) {
@@ -80,7 +80,7 @@ describe('test/express blog api', function() {
 
     // 不能传特定的id
     // it('POST /blog/delete', function (done) {
-    //     request.post('/blog/delete')
+    //     request.post('/api/blog/delete')
     //            .send({blog_id: "5922b6f0e2b96625bc34afe5"})
     //            .expect(200)
     //            .end(function (err, res) {
@@ -91,7 +91,7 @@ describe('test/express blog api', function() {
     // });
 
     // it('GET /blog/:blog_id', function (done) {
-    //     request.get('/blog/5922b6f0e2b96625bc34afe5')
+    //     request.get('/api/blog/5922b6f0e2b96625bc34afe5')
     //            .expect(200)
     //            .end(function (err, res) {
     //                 res.body.msg.should.equal('ok');

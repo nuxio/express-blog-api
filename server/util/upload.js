@@ -1,10 +1,12 @@
 let path = require('path');
 let multer = require('multer');
+let publicPath = require('../config').publicPath;
+
+let dest = publicPath ? path.resolve(publicPath + '/upload/avatars/') : path.resolve(__dirname, '../public/upload/avatars/');
 
 const storage = multer.diskStorage({
     // 指定上传路径
-    // todo: 此处路径以后改为nginx代理的静态目录路径
-    destination: path.resolve(__dirname, '../public/upload/avatars/'),
+    destination: dest,
     // 指定上传文件名
     filename: function (req, file, cb) {
         let { username } = req.params;
