@@ -1,5 +1,6 @@
 let connect = require('../mongodb/connect');
 let Schema = connect.Schema;
+let default_avatar = require('../config').default_avatar;
 
 // Schema 一种以文件形式存储的数据库模型骨架，不具备数据库的操作能力
 let UserSchema = new Schema({
@@ -21,6 +22,7 @@ exports.register = function (username, password) {
     let user = new User();
     user.username = username;
     user.password = password;
+    user.avatar_url = default_avatar;
     //Model#save方法返回一个promise对象
     return user.save();
 };

@@ -1,8 +1,8 @@
 let path = require('path');
 let multer = require('multer');
-let publicPath = require('../config').publicPath;
+let public_path = require('../config').public_path;
 
-let dest = publicPath ? path.resolve(publicPath + '/upload/avatars/') : path.resolve(__dirname, '../public/upload/avatars/');
+let dest = public_path ? path.resolve(public_path + '/upload/avatars/') : path.resolve(__dirname, '../public/upload/avatars/');
 
 const storage = multer.diskStorage({
     // 指定上传路径

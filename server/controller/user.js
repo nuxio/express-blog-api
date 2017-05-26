@@ -1,6 +1,7 @@
 let User = require('../model/User');
 let crypto = require('crypto');
 let UploadUtil = require('../util/upload');
+let path_prefix = require('../config').path_prefix;
 
 const password_suffix = '_blog';
 
@@ -164,8 +165,8 @@ exports.uploadAvatar = function (req, res) {
         } else {
             let { username } = req.params;
             let originalname = req.file.originalname.split(".");
-            // todo: 此处路径以后改为nginx代理的静态目录路径
-            let file_path = '/public/upload/avatars/' + username + '.' + originalname[originalname.length - 1];
+
+            let file_path = path_prefix + 'upload/avatars/' + username + '.' + originalname[originalname.length - 1];
             res.json({msg: 'ok', avatar_url: file_path});
         }
     });

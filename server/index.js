@@ -2,7 +2,7 @@ let express = require('express');
 let bodyParser = require('body-parser');
 let cookieParser = require('cookie-parser');
 let session = require('express-session');
-// let cors = require('cors');
+let cors = require('cors');
 
 let route = require('./route');
 
@@ -26,10 +26,10 @@ app.use(session({
 }));
 
 // 设置允许跨域请求，携带cookie
-// app.use(cors({
-//     origin: 'http://localhost:3001',
-//     credentials: true
-// }));
+app.use(cors({
+    origin: 'http://localhost:3001',
+    credentials: true
+}));
 
 // 设置路由
 app.use('/api', route);
