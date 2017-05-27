@@ -10,7 +10,7 @@ let router = express.Router();
 // user
 router.post('/register',                                   user.register);
 router.post('/login',                                      user.login);
-router.post('/logout',                  auth.confirmLogin, user.logout);
+router.post('/logout',                                     user.logout);
 router.get('/user/:username',                              user.getUserInfoByUsername);
 router.post('/user/:username',          auth.confirmLogin, user.updateUserInfo);
 router.post('/upload/avatar/:username', auth.confirmLogin, user.uploadAvatar);
