@@ -1,4 +1,5 @@
 let Blog = require('../model/Blog');
+let UploadUtil = require('../util/upload');
 
 exports.createBlog = function (req, res) {
     let { title, content, tags } = req.body;
@@ -195,4 +196,15 @@ exports.up = function (req, res) {
     })
     .then(blog => res.json({msg: 'ok', action}))
     .catch(error => res.json({msg: error.msg || '点赞失败，请稍后再试', error}));
+};
+
+// 上传图片
+exports.upload = function (req, res) {
+    UploadUtil.uploadBlogImg(req, res, function (error) {
+        if(error) {
+            res.json({msg: error.code ? '图片大小超过限制' : error});
+        } else {
+            res.json({msg: 'ok', img_url: req.file.custom_name});
+        }
+    });
 };

@@ -18,6 +18,7 @@ router.post('/upload/avatar/:username', auth.confirmLogin, user.uploadAvatar);
 // blog
 router.post('/create',               auth.confirmLogin, blog.createBlog);
 router.post('/blog/delete',          auth.confirmLogin, blog.deleteBlogById);
+router.post('/blog/upload',          auth.confirmLogin, blog.upload);
 router.get('/blog/:blog_id',                            blog.findBlogById);
 router.post('/blog/:blog_id',        auth.confirmLogin, blog.updateBlogById);
 router.get('/blogs',                                    blog.queryBlogsByPage);

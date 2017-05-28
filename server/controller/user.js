@@ -159,7 +159,7 @@ exports.updateUserInfo = function (req, res) {
 
 // 上传用户头像
 exports.uploadAvatar = function (req, res) {
-    UploadUtil.upload(req, res, function (error) {
+    UploadUtil.uploadAvatar(req, res, function (error) {
         if(error) {
             res.json({msg: error.code ? '图片大小超过限制' : error});
         } else {
