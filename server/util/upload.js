@@ -1,50 +1,37 @@
+let fs = require('fs');
 let path = require('path');
-let multer = require('multer');
-let public_path = require('../config').public_path;
+let formidable = require('formidable');
+let config = require('../config');
 
-let dest_avatar = public_path ? path.resolve(public_path + '/upload/avatars/') : path.resolve(__dirname, '../public/upload/avatars/');
-let dest_blog_img = public_path ? path.resolve(public_path + '/upload/blog_imgs/') : path.resolve(__dirname, '../public/upload/blog_imgs/');
+const regex = /.*\.(jpg|jpeg|png|gif)$/;
 
-const storage_avatar = multer.diskStorage({
-    // 指定上传路径
-    destination: dest_avatar,
-    // 指定上传文件名
-    filename: function (req, file, cb) {
-        let { username } = req.params;
-        let file_format = file.originalname.split(".");
-        cb(null, username + "." + file_format[file_format.length - 1]);
-    }
-});
+/**
+ * 上传图片方法
+ * @param {String} folder 上传到哪个目录
+ * @param {String} filename 保存时的文件名 
+ * @param {String} fieldname 上传的文件在表单中的名称
+ */
+exports.uploadImg = function (req, res, folder, filename, fieldname) {
+    let new_path = '';
+    let form = new formidable.IncomingForm();
+    form.uploadDir = path.resolve(__dirname, config.upload_path + folder);
+    form.type = true;
+    form.keepExtensions = true;
+    form.maxFieldsSize = 500 * 1024;
 
-// 限制文件上传大小
-const limits_avatar = {
-    fileSize: 100 * 1024 // 表单中文件总大小限制 bytes
-};
+    form.parse(req, function (err, fields, files) {
+        if(err) {
+            return res.json({msg: err.message, err});
+        }
+        if(!regex.test(files[fieldname].name)) {
+            return res.json({msg: '只能上传图片'});
+        }
 
-const storage_blog_img = multer.diskStorage({
-    destination: dest_blog_img,
-    filename: function (req, file, cb) {
-        let file_format = file.originalname.split(".");
-        file_format = file_format[file_format.length - 1];
-        let name = 'IMG_' + new Date().getTime() + '.' + file_format;
-        cb(null, name);
-    }
-});
-
-const limits_blog_img = {
-    fileSize: 500 * 1024
-};
-
-// 校验文件上传格式
-const fileFilter = function (req, file, cb) {
-    const img_regex = /.*\.(jpg|jpeg|png|gif)$/;
-    if(!img_regex.test(file.originalname)) {
-        // 第一个参数返回错误对象，亦可返回字符串，第二个参数表示是否保存此文件
-        cb('只能上传图片', false);
-    } else {
-        cb(null, true);
-    }
-};
-
-exports.uploadAvatar = multer({storage_avatar, limits_avatar, fileFilter}).single('avatar');
-exports.uploadBlogImg = multer({storage_blog_img, limits_blog_img, fileFilter}).single('img');
+        let format = files[fieldname].name.split('.');
+        format = format[format.length - 1]; 
+        new_path = form.uploadDir + '/' + filename + '.' + format;
+        fs.renameSync(files[fieldname].path, new_path);
+        
+        return res.json({msg: 'ok', url: config.public_path + filename + '.' + format});
+    });
+}

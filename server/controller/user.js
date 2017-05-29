@@ -159,15 +159,6 @@ exports.updateUserInfo = function (req, res) {
 
 // 上传用户头像
 exports.uploadAvatar = function (req, res) {
-    UploadUtil.uploadAvatar(req, res, function (error) {
-        if(error) {
-            res.json({msg: error.code ? '图片大小超过限制' : error});
-        } else {
-            let { username } = req.params;
-            let originalname = req.file.originalname.split(".");
-
-            let file_path = path_prefix + 'upload/avatars/' + username + '.' + originalname[originalname.length - 1];
-            res.json({msg: 'ok', avatar_url: file_path});
-        }
-    });
+    let { username } = req.params;
+    UploadUtil.uploadImg(req, res, 'avatars', username, 'avatar');
 };

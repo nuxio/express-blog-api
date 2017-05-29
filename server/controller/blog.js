@@ -200,11 +200,6 @@ exports.up = function (req, res) {
 
 // 上传图片
 exports.upload = function (req, res) {
-    UploadUtil.uploadBlogImg(req, res, function (error) {
-        if(error) {
-            res.json({msg: error.code ? '图片大小超过限制' : error});
-        } else {
-            res.json({msg: 'ok', img_url: req.file.custom_name});
-        }
-    });
+    let filename = 'IMG_' + new Date().getTime();
+    UploadUtil.uploadImg(req, res, 'blog_imgs', filename, 'img');
 };

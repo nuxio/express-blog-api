@@ -1,8 +1,8 @@
 module.exports = {
-    // 默认头像地址
-    default_avatar: '/dist/default_avatar.jpg',
-    // 静态文件目录
-    public_path: '/Users/nuxio/workspace/vue-blog/dist/',
-    // 相对路径的前缀 
-    path_prefix: '/dist/'
+    // 默认头像路径
+    default_avatar: '/public/default_avatar.jpg',
+    // 上传路径
+    upload_path: '../public/upload/',
+    // 返回给前端的路径前缀
+    public_path: '/public/'
 };

@@ -95,7 +95,7 @@
 // response
 {
     msg,
-    avatar_url // 头像路径
+    url // 头像路径
 }
 ```
 
