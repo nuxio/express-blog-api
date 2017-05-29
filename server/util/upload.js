@@ -5,6 +5,26 @@ let config = require('../config');
 
 const regex = /.*\.(jpg|jpeg|png|gif)$/;
 
+function mkdirsSync(dirpath) { 
+    if (!fs.existsSync(dirpath)) {
+        let pathtmp = '';
+        dirpath.split(path.sep).forEach(function(dirname) {
+            pathtmp = pathtmp ? path.join(pathtmp, dirname) : dirname;
+            if(!pathtmp) {
+                return;
+            }
+            if(!fs.existsSync(pathtmp)) {
+                try {
+                    fs.mkdirSync(pathtmp);
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        });
+    }
+    return true; 
+}
+
 /**
  * 上传图片方法
  * @param {String} folder 上传到哪个目录
@@ -14,7 +34,11 @@ const regex = /.*\.(jpg|jpeg|png|gif)$/;
 exports.uploadImg = function (req, res, folder, filename, fieldname) {
     let new_path = '';
     let form = new formidable.IncomingForm();
-    form.uploadDir = path.resolve(__dirname, config.upload_path + folder);
+    let dest = path.resolve(__dirname, config.upload_path + folder);
+    if(!fs.existsSync(dest)) {
+        mkdirsSync(dest);
+    }
+    form.uploadDir = dest;
     form.type = true;
     form.keepExtensions = true;
     form.maxFieldsSize = 500 * 1024;
@@ -32,6 +56,6 @@ exports.uploadImg = function (req, res, folder, filename, fieldname) {
         new_path = form.uploadDir + '/' + filename + '.' + format;
         fs.renameSync(files[fieldname].path, new_path);
         
-        return res.json({msg: 'ok', url: config.public_path + filename + '.' + format});
+        return res.json({msg: 'ok', url: config.public_path + folder + '/' + filename + '.' + format});
     });
 }
