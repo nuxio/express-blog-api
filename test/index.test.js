@@ -54,17 +54,17 @@ describe('test/express blog api', function() {
                });
     });
 
-    it('POST /upload/avatar/:username', function (done) {
-        request.post('/api/upload/avatar/test')
-               .attach('avatar', './test/files/test_avatar.jpg')
-               .expect(200)
-               .end(function (err, res) {
-                    res.body.msg.should.equal('ok');
-                    res.body.avatar_url.should.equal('/public/upload/avatars/test.jpg');
+    // it('POST /upload/avatar/:username', function (done) {
+    //     request.post('/api/upload/avatar/test')
+    //            .attach('avatar', './test/files/test_avatar.jpg')
+    //            .expect(200)
+    //            .end(function (err, res) {
+    //                 res.body.msg.should.equal('ok');
+    //                 res.body.url.should.equal('/public/upload/avatars/test.jpg');
 
-                    done(err);
-               });
-    });
+    //                 done(err);
+    //            });
+    // });
 
     it('POST /create', function (done) {
         request.post('/api/create')

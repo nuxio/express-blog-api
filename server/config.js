@@ -4,5 +4,5 @@ module.exports = {
     // 上传路径
     upload_path: '../public/upload/',
     // 返回给前端的路径前缀
-    public_path: '/public/'
+    public_path: '/public/upload/'
 };
