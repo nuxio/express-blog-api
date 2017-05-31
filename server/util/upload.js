@@ -7,12 +7,10 @@ const regex = /.*\.(jpg|jpeg|png|gif)$/;
 
 function mkdirsSync(dirpath) { 
     if (!fs.existsSync(dirpath)) {
-        let pathtmp = '';
+        let pathtmp = '/';
         dirpath.split(path.sep).forEach(function(dirname) {
-            pathtmp = pathtmp ? path.join(pathtmp, dirname) : dirname;
-            if(!pathtmp) {
-                return;
-            }
+            if(!dirname) return;
+            pathtmp = path.join(pathtmp, dirname);
             if(!fs.existsSync(pathtmp)) {
                 try {
                     fs.mkdirSync(pathtmp);
