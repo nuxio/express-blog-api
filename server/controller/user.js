@@ -160,5 +160,5 @@ exports.updateUserInfo = function (req, res) {
 // 上传用户头像
 exports.uploadAvatar = function (req, res) {
     let { username } = req.params;
-    UploadUtil.uploadImg(req, res, 'avatars', username, 'avatar');
+    UploadUtil.uploadImg(req, res, 'avatars', username+'_'+new Date().getTime(), 'avatar');
 };
