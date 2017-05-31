@@ -50,7 +50,7 @@ exports.deleteById = function (req, res) {
             if(!comment) {
                 reject({msg: '不存在的评论'});
             }
-            if(comment.author !== user.username) {
+            if(comment.author.toString() !== user._id.toString()) {
                 reject({msg: '不能删除他人评论'});
             } else {
                 resolve();

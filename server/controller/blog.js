@@ -87,7 +87,7 @@ exports.updateBlogById = function (req, res) {
             if(!blog) {
                 reject({msg: '不存在的博客'});
             }
-            if(blog.author !== user.username) {
+            if(blog.author.toString() !== user._id.toString()) {
                 reject({msg: '不能更改他人博客'});
             } else {
                 resolve();
@@ -151,7 +151,7 @@ exports.deleteBlogById = function (req, res) {
             if(!blog) {
                 reject({msg: '不存在的博客'});
             }
-            if(blog.author !== user.username) {
+            if(blog.author.toString() !== user._id.toString()) {
                 reject({msg: '不能删除他人的博客'});
             } else {
                 resolve();

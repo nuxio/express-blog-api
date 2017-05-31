@@ -51,8 +51,9 @@ exports.updateById = function(id, update) {
 };
 
 // 计算总共有多少条
-exports.count = function() {
-    return Blog.count({deleted: false});
+exports.count = function(filters = {}) {
+    filters.deleted = false;
+    return Blog.count(filters);
 }
 
 /**
@@ -60,6 +61,9 @@ exports.count = function() {
  * @params {Object} filters 其他查询参数，如 { author: 'xxx' }
  */
 exports.findByPage = function(offset, limit, filters = {}) {
+    if(filters.author) {
+        filters.author = connect.Types.ObjectId(filters.author);
+    }
     filters.deleted = false;
     return Blog.find(filters, {content: 0, deleted: 0, ups: 0, __v: 0})
                 .skip(offset)
