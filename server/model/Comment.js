@@ -3,15 +3,17 @@ let Schema = connect.Schema;
 let ObjectId = Schema.Types.ObjectId;
 
 let CommentSchema = new Schema({
-    content          : { type: String, required: true },
-    create_at        : { type: String, required: true },
-    author           : { type: String, required: true },
-    author_avatar_url: { type: String },
-    reply_to         : { type: String }, // 是否是回复某一条评论的
-    blog_id          : { type: ObjectId, required: true },
-    up               : { type: Number,   default: 0 },
-    ups              : { type: Array,    default: [] },
-    deleted          : { type: Boolean,  default: false }
+    content  : { type: String, required: true },
+    create_at: { type: String, required: true },
+    author   : { type: ObjectId, ref: 'User', required: true },
+    reply_to : { type: String }, // 是否是回复某一条评论的
+    blog_id  : { type: String,   required: true },
+    up       : { type: Number,   default: 0 },
+    ups      : [{ 
+        type: ObjectId,
+        ref: 'User'
+    }],
+    deleted  : { type: Boolean,  default: false }
 });
 
 let Comment = connect.model('Comment', CommentSchema);
@@ -27,7 +29,12 @@ exports.comment = function (initials) {
 
 // 按博客id来搜索评论列表
 exports.findByBlogId = function (id, offset = 0, limit = 10000) {
-    return Comment.find({ blog_id: id, deleted: false }).skip(offset).limit(limit).exec();
+    return Comment.find({ blog_id: id, deleted: false })
+            .skip(offset)
+            .limit(limit)
+            .populate('author', 'username avatar_url')
+            .populate('ups', 'username avatar_url')
+            .exec();
 };
 
 // 根据评论ID删除
@@ -41,22 +48,22 @@ exports.findById = function(id) {
 };
 
 // 点赞
-exports.up = function (id, username, avatar_url) {
+exports.up = function (id, user_id) {
     let update = {
         $inc: { up: 1 },
         $push: {
-            ups: { username, avatar_url }
+            ups: user_id 
         }
     };
     return Comment.findOneAndUpdate({_id: id, deleted: false}, update).exec();
 };
 
 // 取消点赞
-exports.down = function (id, username) {
+exports.down = function (id, user_id) {
     let update = {
         $inc: {up: -1},
         $pull: {
-            ups: { username }
+            ups: user_id
         }
     };
 

@@ -10,7 +10,7 @@ let UserSchema = new Schema({
     gender     : { type: String },
     email      : { type: String },
     mobile     : { type: String },
-    introduce  : { type: String }    
+    introduce  : { type: String }
 });
 
 // model 由Schema发布生成的模型，具有抽象属性和行为的数据库操作对
@@ -35,5 +35,5 @@ exports.findByUsername = function (username) {
 
 // 根据用户名更新用户信息
 exports.updateByUsername = function(username, update) {
-    return User.findOneAndUpdate({username: username}, update).lean().exec();
+    return User.findOneAndUpdate({username: username}, update, { new: true }).lean().exec();
 }

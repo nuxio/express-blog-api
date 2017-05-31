@@ -27,8 +27,7 @@ exports.comment = function(req, res) {
     let init = {
         content,
         blog_id,
-        author: user.username,
-        author_avatar_url: user.avatar_url,
+        author: user._id,
         reply_to: reply_to || ''
     };
 
@@ -60,7 +59,7 @@ exports.deleteById = function (req, res) {
     })
     .then(() => Comment.delete(comment_id))
     .then(comment => res.json({msg: 'ok', comment_id: comment._id}))
-    .catch(error => res.json({msg: error.msg || '删除评论失败，请稍后再试', error}))
+    .catch(error => res.json({msg: error.msg || '删除评论失败，请稍后再试', error}));
 };
 
 // 点赞&取消点赞
@@ -82,10 +81,11 @@ exports.up = function (req, res) {
             if(!comment) {
                 reject({msg: '不存在的评论'});
             }
-            if(comment.author === user.username) {
+            let user_id = user._id.toString();
+            if(comment.author.toString() === user_id) {
                 reject({msg: '不能为自己的评论点赞'});
             } else {
-                if(comment.ups.filter(u => u.username === user.username).length) {
+                if(comment.ups.filter(u => u.toString() === user_id).length) {
                     action = 'down';
                 }
                 resolve(action);
@@ -94,9 +94,11 @@ exports.up = function (req, res) {
     })
     .then((action) => {
         if(action === 'up') {
-            return Comment.up(comment_id, user.username, user.avatar_url);
+            return Comment.up(comment_id, user._id);
         } else if(action === 'down') {
-            return Comment.down(comment_id, user.username);
+            return Comment.down(comment_id, user._id);
+        } else {
+            return res.json({msg: '未知操作'});
         }
     })
     .then(comment => res.json({msg: 'ok', action}))

@@ -138,13 +138,21 @@
         title,
         content,
         tags, // array
-        author,
+        author: {
+            username,
+            avatar_url
+        },
         author_avatar_url,
         create_at, // timestamp
         last_modify_at, // timestamp
         visit, // 访问量
         up, // 点赞数
-        ups // array 点赞人数组
+        ups: [
+            {
+                username,
+                avatar_url
+            }
+        ] // array 点赞人数组
     }
 }
 ```
@@ -224,10 +232,17 @@
             content,
             create_at,
             reply_to,
-            author,
-            author_avatar_url,
+            author: {
+                username,
+                avatar_url
+            },
             up,
-            ups
+            ups: [
+                {
+                    username,
+                    avatar_url
+                }
+            ]
         }
     ]
 }
