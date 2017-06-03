@@ -66,6 +66,7 @@ exports.findByPage = function(offset, limit, filters = {}) {
     }
     filters.deleted = false;
     return Blog.find(filters, {content: 0, deleted: 0, ups: 0, __v: 0})
+                .sort({create_at: -1})
                 .skip(offset)
                 .limit(limit)
                 .populate('author', 'username avatar_url')
