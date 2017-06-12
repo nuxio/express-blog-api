@@ -9,8 +9,11 @@ let route = require('./route');
 let app = express();
 
 // 解析post
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+    limit: '10mb'
+}));
 app.use(bodyParser.urlencoded({
+    limit: '10mb',
     extended: true
 }));
 // cookie signedCookie 需要传递secret字段，要与session参数中的一致
