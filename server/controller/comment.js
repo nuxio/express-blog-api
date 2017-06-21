@@ -28,12 +28,26 @@ exports.comment = function(req, res) {
         content,
         blog_id,
         author: user._id,
-        reply_to: reply_to || ''
+        reply_to: reply_to || null,
+        reply_who: null
     };
-
-    Comment.comment(init)
-    .then(c => res.json({msg: 'ok', comment_id: c._id}))
-    .catch(error => res.json({msg: '评论失败', error}));
+    if(init.reply_to) {
+        Comment.findById(init.reply_to)
+        .then(c => {
+            if(!c) {
+                return res.json({msg: '回复的评论不存在'});
+            }
+            init.reply_to = c._id;
+            init.reply_who = c.author;
+            Comment.comment(init)
+            .then(c => res.json({msg: 'ok', comment_id: c._id}))
+            .catch(error => res.json({msg: '评论失败', error}));
+        });
+    } else {
+        Comment.comment(init)
+        .then(c => res.json({msg: 'ok', comment_id: c._id}))
+        .catch(error => res.json({msg: '评论失败', error}));
+    }
 };
 
 // 删除

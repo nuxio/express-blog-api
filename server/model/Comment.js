@@ -6,7 +6,8 @@ let CommentSchema = new Schema({
     content  : { type: String, required: true },
     create_at: { type: String, required: true },
     author   : { type: ObjectId, ref: 'User', required: true },
-    reply_to : { type: String }, // 是否是回复某一条评论的
+    reply_to : { type: ObjectId }, // 是否是回复某一条评论的
+    reply_who: { type: ObjectId, ref: 'User' },
     blog_id  : { type: String,   required: true },
     up       : { type: Number,   default: 0 },
     ups      : [{ 
@@ -34,6 +35,7 @@ exports.findByBlogId = function (id, offset = 0, limit = 10000) {
             .limit(limit)
             .populate('author', 'username avatar_url')
             .populate('ups', 'username avatar_url')
+            .populate('reply_who', 'username')
             .exec();
 };
 
